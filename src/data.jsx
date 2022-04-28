@@ -1,0 +1,16 @@
+export const data = [
+  'https://picsum.photos/1200/1300',
+  'https://picsum.photos/1300/1200',
+  'https://picsum.photos/1400/1500',
+  'https://picsum.photos/1300/1500',
+  'https://picsum.photos/1400/1500',
+  'https://picsum.photos/1500/1300',
+  'https://picsum.photos/1600/1500',
+  'https://picsum.photos/1300/1400',
+  'https://picsum.photos/1400/1300',
+  'https://picsum.photos/1500/1300',
+  'https://picsum.photos/1400/1400',
+  'https://picsum.photos/1300/1500',
+  'https://picsum.photos/1600/1300',
+  'https://picsum.photos/1400/1700',
+];
