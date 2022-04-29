@@ -4,18 +4,14 @@ import { data } from './data';
 import LightBox from './LightBox';
 
 function App() {
-  const [lightBox, setLightBox] = useState({
-    isOpen: false,
-    index: 0,
-  });
+  const [isActive, setIsActive] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleOpenLightBox = (index) => {
     document.body.style.overflow = 'hidden';
     document.getElementsByTagName('html')[0].style.overflow = 'hidden';
-    setLightBox({
-      isOpen: true,
-      index,
-    });
+    setIsActive(true);
+    setCurrentIndex(index + 1);
   };
 
   return (
@@ -34,7 +30,13 @@ function App() {
         ))}
       </Grid>
 
-      <LightBox data={data} lightBox={lightBox} setLightBox={setLightBox} />
+      <LightBox
+        data={data}
+        isActive={isActive}
+        setIsActive={setIsActive}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+      />
     </MainWrapper>
   );
 }

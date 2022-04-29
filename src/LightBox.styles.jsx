@@ -9,10 +9,12 @@ const appear = keyframes`
 `;
 
 export const StyledLightBox = styled.div`
-  display: ${({ $isOpen }) => ($isOpen ? 'initial' : 'none')};
+  display: ${({ $isActive }) => ($isActive ? 'flex' : 'none')};
+  justify-content: flex-start;
+  position: fixed;
   animation: ${appear} 0.3s forwards;
   height: 100vh;
-  position: fixed;
+  width: 100%;
   top: 0;
   left: 0;
   right: 0;
@@ -50,23 +52,21 @@ export const StyledLightBox = styled.div`
 `;
 
 export const ImgWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 100%;
+  width: ${({ dataLength }) => `${(dataLength + 2) * 100}%`};
   height: 100%;
-  transform: ${({ $currentIndex }) => `translateX(-${$currentIndex * 100}%)`};
+  display: flex;
+  flex-shrink: 0;
+  transform: ${({ $currentIndex, dataLength }) =>
+    `translateX(${-$currentIndex * (100 / (dataLength + 2))}%)`};
   transition: transform 0.3s ease-in-out;
 `;
 
 export const StyledImage = styled.div`
-  position: absolute;
-  transform: ${({ index }) => `translateX(${index * 100}%)`};
-  width: 100%;
-  height: 100%;
   display: flex;
+  width: ${({ dataLength }) => `${100 / (dataLength + 2)}%`};
+  flex-basis: ${({ dataLength }) => `${100 / (dataLength + 2)}%`}};
+  flex-shrink: 0;
+  flex: 1;
   justify-content: center;
   align-items: center;
 

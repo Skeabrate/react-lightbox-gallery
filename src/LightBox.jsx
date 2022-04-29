@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useRef, useEffect } from 'react';
 import {
   StyledLightBox,
   CloseButton,
@@ -8,54 +7,79 @@ import {
   StyledImage,
   ImgWrapper,
 } from './LightBox.styles';
+import { throttleFunc } from './utils/throttle';
 
-const LightBox = ({ data, lightBox, setLightBox }) => {
+const LightBox = (props) => {
+  const { data, isActive, setIsActive, currentIndex, setCurrentIndex } = props;
+  const sliderRef = useRef(null);
+  const throttle = useRef(false);
+
   const handleCloseLightBox = () => {
     document.body.style.overflow = 'unset';
     document.getElementsByTagName('html')[0].style.overflow = 'unset';
-    setLightBox((state) => ({
-      ...state,
-      isOpen: false,
-    }));
+    setIsActive(false);
   };
 
-  const nextSlide = () =>
-    setLightBox((state) => ({
-      ...state,
-      index: state.index + 1,
-    }));
+  const handleAction = (type) => {
+    if (!throttle.current) {
+      throttle.current = true;
 
-  const prevSlide = () =>
-    setLightBox((state) => ({
-      ...state,
-      index: state.index - 1,
-    }));
+      setTimeout(() => {
+        throttle.current = false;
+      }, 350);
+
+      sliderRef.current.style.transitionDuration = '300ms';
+      if (type === 'prev') setCurrentIndex((state) => state - 1);
+      else if (type === 'next') setCurrentIndex((state) => state + 1);
+    }
+  };
+
+  useEffect(() => {
+    const handleTransition = () => {
+      if (currentIndex <= 0) {
+        sliderRef.current.style.transitionDuration = '0ms';
+        setCurrentIndex(data.length);
+      }
+      if (currentIndex >= data.length + 1) {
+        sliderRef.current.style.transitionDuration = '0ms';
+        setCurrentIndex(1);
+      }
+    };
+    document.addEventListener('transitionend', handleTransition);
+
+    return () =>
+      document.removeEventListener('transitionend', handleTransition);
+  }, [currentIndex, data]);
 
   return (
-    <StyledLightBox $isOpen={lightBox.isOpen}>
+    <StyledLightBox $isActive={isActive}>
       <CloseButton onClick={handleCloseLightBox}>X</CloseButton>
-      {lightBox.index ? (
-        <PreviousButton onClick={prevSlide}>{'<'}</PreviousButton>
-      ) : null}
-      {lightBox.index < data.length - 1 ? (
-        <NextButton onClick={nextSlide}>{'>'}</NextButton>
-      ) : null}
+      <PreviousButton onClick={() => handleAction('prev')}>
+        {'<'}
+      </PreviousButton>
+      <NextButton onClick={() => handleAction('next')}>{'>'}</NextButton>
 
-      <ImgWrapper $currentIndex={lightBox.index}>
+      <ImgWrapper
+        $currentIndex={currentIndex}
+        dataLength={data.length}
+        ref={sliderRef}
+      >
+        <StyledImage key={data.length + 1}>
+          <img src={data[data.length - 1]} alt="img" />
+        </StyledImage>
+
         {data.map((item, index) => (
-          <StyledImage key={index} index={index}>
+          <StyledImage key={index} dataLength={data.length}>
             <img src={item} alt="img" />
           </StyledImage>
         ))}
+
+        <StyledImage key={data.length + 2}>
+          <img src={data[0]} alt="img" />
+        </StyledImage>
       </ImgWrapper>
     </StyledLightBox>
   );
-};
-
-LightBox.propTypes = {
-  data: PropTypes.array.isRequired,
-  lightBox: PropTypes.object.isRequired,
-  setLightBox: PropTypes.func.isRequired,
 };
 
 export default LightBox;
