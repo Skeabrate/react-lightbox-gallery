@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import ClipLoader from 'react-spinners/ClipLoader';
 import {
   StyledLightBox,
   CloseButton,
@@ -6,10 +7,17 @@ import {
   NextButton,
   StyledImage,
   ImgWrapper,
+  StyledLoading,
 } from './LightBox.styles';
 
-const LightBox = (props) => {
-  const { data, isActive, setIsActive, currentIndex, setCurrentIndex } = props;
+const LightBox = ({
+  data,
+  isLoaded = [],
+  isActive,
+  setIsActive,
+  currentIndex,
+  setCurrentIndex,
+}) => {
   const sliderRef = useRef(null);
   const throttle = useRef(false);
 
@@ -60,21 +68,45 @@ const LightBox = (props) => {
 
       <ImgWrapper
         $currentIndex={currentIndex}
-        dataLength={data.length}
+        $dataLength={data.length}
         ref={sliderRef}
       >
-        <StyledImage key={data.length + 1}>
+        <StyledImage
+          key={data.length + 1}
+          $isLoaded={isLoaded[data.length - 1]}
+        >
           <img src={data[data.length - 1]} alt="img" />
+
+          {!isLoaded[data.length - 1] ? (
+            <StyledLoading>
+              <ClipLoader color="#e0dfdf" />
+            </StyledLoading>
+          ) : null}
         </StyledImage>
 
         {data.map((item, index) => (
-          <StyledImage key={index} dataLength={data.length}>
+          <StyledImage
+            key={index}
+            $dataLength={data.length}
+            $isLoaded={isLoaded[index]}
+          >
             <img src={item} alt="img" />
+
+            {!isLoaded[index] ? (
+              <StyledLoading>
+                <ClipLoader color="#e0dfdf" />
+              </StyledLoading>
+            ) : null}
           </StyledImage>
         ))}
 
-        <StyledImage key={data.length + 2}>
+        <StyledImage key={data.length + 2} $isLoaded={!isLoaded[0]}>
           <img src={data[0]} alt="img" />
+          {!isLoaded[0] ? (
+            <StyledLoading>
+              <ClipLoader color="#e0dfdf" />
+            </StyledLoading>
+          ) : null}
         </StyledImage>
       </ImgWrapper>
     </StyledLightBox>

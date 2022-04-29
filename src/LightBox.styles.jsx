@@ -52,29 +52,39 @@ export const StyledLightBox = styled.div`
 `;
 
 export const ImgWrapper = styled.div`
-  width: ${({ dataLength }) => `${(dataLength + 2) * 100}%`};
+  width: ${({ $dataLength }) => `${($dataLength + 2) * 100}%`};
   height: 100%;
   display: flex;
   flex-shrink: 0;
-  transform: ${({ $currentIndex, dataLength }) =>
-    `translateX(${-$currentIndex * (100 / (dataLength + 2))}%)`};
+  transform: ${({ $currentIndex, $dataLength }) =>
+    `translateX(${-$currentIndex * (100 / ($dataLength + 2))}%)`};
   transition: transform 0.3s ease-in-out;
 `;
 
 export const StyledImage = styled.div`
   display: flex;
-  width: ${({ dataLength }) => `${100 / (dataLength + 2)}%`};
-  flex-basis: ${({ dataLength }) => `${100 / (dataLength + 2)}%`}};
+  width: ${({ $dataLength }) => `${100 / ($dataLength + 2)}%`};
+  flex-basis: ${({ $dataLength }) => `${100 / ($dataLength + 2)}%`}};
   flex-shrink: 0;
   flex: 1;
   justify-content: center;
   align-items: center;
+	position: relative;
 
   img {
     max-width: 90%;
     max-height: 90%;
     object-fit: contain;
+		opacity: ${({ $isLoaded }) => ($isLoaded ? 1 : 0)};
+		transition: opacity .3s ease-in-out;
   }
+`;
+
+export const StyledLoading = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 export const CloseButton = styled.button`
