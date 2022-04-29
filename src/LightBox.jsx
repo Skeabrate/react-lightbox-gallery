@@ -7,7 +7,6 @@ import {
   StyledImage,
   ImgWrapper,
 } from './LightBox.styles';
-import { throttleFunc } from './utils/throttle';
 
 const LightBox = (props) => {
   const { data, isActive, setIsActive, currentIndex, setCurrentIndex } = props;
