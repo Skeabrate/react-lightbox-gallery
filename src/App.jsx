@@ -8,19 +8,27 @@ function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState({});
 
-  const handleLoad = (index) => {
+  const handleBodyOverflow = useCallback((mode) => {
+    if (mode === 'unset') {
+      document.body.style.overflow = 'unset';
+      document.getElementsByTagName('html')[0].style.overflow = 'unset';
+    } else if (mode === 'hidden') {
+      document.body.style.overflow = 'hidden';
+      document.getElementsByTagName('html')[0].style.overflow = 'hidden';
+    }
+  }, []);
+
+  const handleLoad = (index) =>
     setIsLoaded((state) => ({
       ...state,
       [index]: true,
     }));
-  };
 
-  const handleOpenLightBox = useCallback((index) => {
-    document.body.style.overflow = 'hidden';
-    document.getElementsByTagName('html')[0].style.overflow = 'hidden';
+  const handleOpenLightBox = (index) => {
+    handleBodyOverflow('hidden');
     setIsActive(true);
     setCurrentIndex(index + 1);
-  }, []);
+  };
 
   return (
     <MainWrapper>
@@ -53,6 +61,7 @@ function App() {
           setIsActive={setIsActive}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
+          handleBodyOverflow={handleBodyOverflow}
         />
       </Suspense>
     </MainWrapper>

@@ -17,29 +17,53 @@ const LightBox = ({
   setIsActive,
   currentIndex,
   setCurrentIndex,
+  handleBodyOverflow,
 }) => {
   const sliderRef = useRef(null);
   const throttle = useRef(false);
 
   const handleCloseLightBox = () => {
-    document.body.style.overflow = 'unset';
-    document.getElementsByTagName('html')[0].style.overflow = 'unset';
+    handleBodyOverflow('unset');
     setIsActive(false);
   };
 
-  const handleAction = (type) => {
-    if (!throttle.current) {
-      throttle.current = true;
+  const throttleFunc = (func = () => {}, delay = 350) => {
+    return (...args) => {
+      if (!throttle.current) {
+        throttle.current = true;
 
-      setTimeout(() => {
-        throttle.current = false;
-      }, 350);
+        setTimeout(() => {
+          throttle.current = false;
+        }, delay);
 
-      sliderRef.current.style.transitionDuration = '300ms';
-      if (type === 'prev') setCurrentIndex((state) => state - 1);
-      else if (type === 'next') setCurrentIndex((state) => state + 1);
-    }
+        func(...args);
+      }
+    };
   };
+
+  const handleArrowAction = throttleFunc((type) => {
+    if (sliderRef.current) sliderRef.current.style.transitionDuration = '300ms';
+    if (type === 'prev') setCurrentIndex((state) => state - 1);
+    else if (type === 'next') setCurrentIndex((state) => state + 1);
+  });
+
+  useEffect(() => {
+    const handleKeyAction = throttleFunc((e) => {
+      if (isActive && e.keyCode === 37) {
+        sliderRef.current.style.transitionDuration = '300ms';
+        setCurrentIndex((state) => state - 1);
+      } else if (isActive && e.keyCode === 39) {
+        sliderRef.current.style.transitionDuration = '300ms';
+        setCurrentIndex((state) => state + 1);
+      } else if (isActive && e.keyCode === 27) {
+        handleBodyOverflow('unset');
+        setIsActive(false);
+      }
+    });
+
+    document.addEventListener('keydown', handleKeyAction);
+    return () => document.removeEventListener('keydown', handleKeyAction);
+  }, [isActive, currentIndex, setCurrentIndex, handleBodyOverflow]);
 
   useEffect(() => {
     const handleTransition = () => {
@@ -52,29 +76,36 @@ const LightBox = ({
         setCurrentIndex(1);
       }
     };
-    document.addEventListener('transitionend', handleTransition);
 
+    document.addEventListener('transitionend', handleTransition);
     return () =>
       document.removeEventListener('transitionend', handleTransition);
-  }, [currentIndex, data]);
+  }, [currentIndex, data, setCurrentIndex, sliderRef]);
 
   return (
     <StyledLightBox $isActive={isActive}>
-      <CloseButton onClick={handleCloseLightBox}>X</CloseButton>
-      <PreviousButton onClick={() => handleAction('prev')}>
+      <CloseButton aria-label="close fullscreen" onClick={handleCloseLightBox}>
+        X
+      </CloseButton>
+      <PreviousButton
+        aria-label="go to previous image"
+        onClick={() => handleArrowAction('prev')}
+      >
         {'<'}
       </PreviousButton>
-      <NextButton onClick={() => handleAction('next')}>{'>'}</NextButton>
+      <NextButton
+        aria-label="go to next image"
+        onClick={() => handleArrowAction('next')}
+      >
+        {'>'}
+      </NextButton>
 
       <ImgWrapper
         $currentIndex={currentIndex}
         $dataLength={data.length}
         ref={sliderRef}
       >
-        <StyledImage
-          key={data.length + 1}
-          $isLoaded={isLoaded[data.length - 1]}
-        >
+        <StyledImage $isLoaded={isLoaded[data.length - 1]}>
           <img src={data[data.length - 1]} alt="img" />
 
           {!isLoaded[data.length - 1] ? (
@@ -100,7 +131,7 @@ const LightBox = ({
           </StyledImage>
         ))}
 
-        <StyledImage key={data.length + 2} $isLoaded={isLoaded[0]}>
+        <StyledImage $isLoaded={isLoaded[0]}>
           <img src={data[0]} alt="img" />
           {!isLoaded[0] ? (
             <StyledLoading>
