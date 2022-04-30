@@ -9,6 +9,8 @@ import img8 from './images/thumb-1920-1018088.jpg';
 import img9 from './images/thumb-1920-210150.jpg';
 import img10 from './images/thumb-1920-725615.jpg';
 import img11 from './images/venom-wallpaper-hd-ixpaper.jpg';
+import img12 from './images/Hulk-Wallpaper.jpg';
+import img13 from './images/13454.jpg';
 
 export const data = [
   img1,
@@ -22,4 +24,6 @@ export const data = [
   img9,
   img10,
   img11,
+  img12,
+  img13,
 ];
