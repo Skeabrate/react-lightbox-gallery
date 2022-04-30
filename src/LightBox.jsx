@@ -100,7 +100,7 @@ const LightBox = ({
           </StyledImage>
         ))}
 
-        <StyledImage key={data.length + 2} $isLoaded={!isLoaded[0]}>
+        <StyledImage key={data.length + 2} $isLoaded={isLoaded[0]}>
           <img src={data[0]} alt="img" />
           {!isLoaded[0] ? (
             <StyledLoading>
