@@ -1,3 +1,3 @@
-React Image Gallery with Lightbox ( mobile friendly )
+React Image Gallery with Lightbox
 
 Demo: https://react-lightbox-gallery.web.app/
