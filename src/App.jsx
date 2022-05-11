@@ -8,16 +8,6 @@ function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState({});
 
-  const handleBodyOverflow = useCallback((mode) => {
-    if (mode === 'unset') {
-      document.body.style.overflow = 'unset';
-      document.getElementsByTagName('html')[0].style.overflow = 'unset';
-    } else if (mode === 'hidden') {
-      document.body.style.overflow = 'hidden';
-      document.getElementsByTagName('html')[0].style.overflow = 'hidden';
-    }
-  }, []);
-
   const handleLoad = (index) =>
     setIsLoaded((state) => ({
       ...state,
@@ -25,7 +15,6 @@ function App() {
     }));
 
   const handleOpenLightBox = (index) => {
-    handleBodyOverflow('hidden');
     setIsActive(true);
     setCurrentIndex(index + 1);
   };
@@ -38,12 +27,12 @@ function App() {
         {data.map((item, index) => (
           <button
             key={index}
-            aria-label="open image in fullscreen"
+            aria-label='open image in fullscreen'
             onClick={() => handleOpenLightBox(index)}
           >
             <img
               src={item}
-              alt="img"
+              alt='img'
               style={{
                 opacity: isLoaded[index] ? 1 : 0,
               }}
@@ -61,7 +50,6 @@ function App() {
           setIsActive={setIsActive}
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
-          handleBodyOverflow={handleBodyOverflow}
         />
       </Suspense>
     </MainWrapper>

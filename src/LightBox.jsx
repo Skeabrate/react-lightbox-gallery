@@ -17,15 +17,11 @@ const LightBox = ({
   setIsActive,
   currentIndex,
   setCurrentIndex,
-  handleBodyOverflow,
 }) => {
   const sliderRef = useRef(null);
   const throttle = useRef(false);
 
-  const handleCloseLightBox = () => {
-    handleBodyOverflow('unset');
-    setIsActive(false);
-  };
+  const handleCloseLightBox = () => setIsActive(false);
 
   const throttleFunc = (func = () => {}, delay = 350) => {
     return (...args) => {
@@ -56,14 +52,13 @@ const LightBox = ({
         sliderRef.current.style.transitionDuration = '300ms';
         setCurrentIndex((state) => state + 1);
       } else if (isActive && e.keyCode === 27) {
-        handleBodyOverflow('unset');
         setIsActive(false);
       }
     });
 
     document.addEventListener('keydown', handleKeyAction);
     return () => document.removeEventListener('keydown', handleKeyAction);
-  }, [isActive, currentIndex, setCurrentIndex, handleBodyOverflow]);
+  }, [isActive, currentIndex, setCurrentIndex]);
 
   useEffect(() => {
     const handleTransition = () => {
@@ -78,64 +73,49 @@ const LightBox = ({
     };
 
     document.addEventListener('transitionend', handleTransition);
-    return () =>
-      document.removeEventListener('transitionend', handleTransition);
+    return () => document.removeEventListener('transitionend', handleTransition);
   }, [currentIndex, data, setCurrentIndex, sliderRef]);
 
   return (
     <StyledLightBox $isActive={isActive}>
-      <CloseButton aria-label="close fullscreen" onClick={handleCloseLightBox}>
+      <CloseButton aria-label='close fullscreen' onClick={handleCloseLightBox}>
         X
       </CloseButton>
-      <PreviousButton
-        aria-label="go to previous image"
-        onClick={() => handleArrowAction('prev')}
-      >
+      <PreviousButton aria-label='go to previous image' onClick={() => handleArrowAction('prev')}>
         {'<'}
       </PreviousButton>
-      <NextButton
-        aria-label="go to next image"
-        onClick={() => handleArrowAction('next')}
-      >
+      <NextButton aria-label='go to next image' onClick={() => handleArrowAction('next')}>
         {'>'}
       </NextButton>
 
-      <ImgWrapper
-        $currentIndex={currentIndex}
-        $dataLength={data.length}
-        ref={sliderRef}
-      >
+      <ImgWrapper $currentIndex={currentIndex} $dataLength={data.length} ref={sliderRef}>
         <StyledImage $isLoaded={isLoaded[data.length - 1]}>
-          <img src={data[data.length - 1]} alt="img" />
+          <img src={data[data.length - 1]} alt='img' />
 
           {!isLoaded[data.length - 1] ? (
             <StyledLoading>
-              <ClipLoader color="#e0dfdf" />
+              <ClipLoader color='#e0dfdf' />
             </StyledLoading>
           ) : null}
         </StyledImage>
 
         {data.map((item, index) => (
-          <StyledImage
-            key={index}
-            $dataLength={data.length}
-            $isLoaded={isLoaded[index]}
-          >
-            <img src={item} alt="img" />
+          <StyledImage key={index} $dataLength={data.length} $isLoaded={isLoaded[index]}>
+            <img src={item} alt='img' />
 
             {!isLoaded[index] ? (
               <StyledLoading>
-                <ClipLoader color="#e0dfdf" />
+                <ClipLoader color='#e0dfdf' />
               </StyledLoading>
             ) : null}
           </StyledImage>
         ))}
 
         <StyledImage $isLoaded={isLoaded[0]}>
-          <img src={data[0]} alt="img" />
+          <img src={data[0]} alt='img' />
           {!isLoaded[0] ? (
             <StyledLoading>
-              <ClipLoader color="#e0dfdf" />
+              <ClipLoader color='#e0dfdf' />
             </StyledLoading>
           ) : null}
         </StyledImage>
